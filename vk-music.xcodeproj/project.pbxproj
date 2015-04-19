@@ -31,6 +31,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		73CE289D542B671443CECC2B /* Pods-vk-music.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-vk-music.release.xcconfig"; path = "Pods/Target Support Files/Pods-vk-music/Pods-vk-music.release.xcconfig"; sourceTree = "<group>"; };
 		7F20FD38199219A300F5322B /* vk-music.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "vk-music.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7F20FD3C199219A300F5322B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7F20FD44199219A400F5322B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -56,7 +57,8 @@
 		7FC0079B19D0B0D90051B39A /* Utilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Utilities.swift; path = Models/Utilities.swift; sourceTree = "<group>"; };
 		7FC007A119D0B8030051B39A /* PlayerNavigationBarView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = PlayerNavigationBarView.xib; path = Resources/PlayerNavigationBarView.xib; sourceTree = "<group>"; };
 		7FDAA04019D1710E0089487E /* UIColor+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "UIColor+Extension.swift"; path = "Models/UIColor+Extension.swift"; sourceTree = "<group>"; };
-		8AEB5697FC664772BD0D1442 /* Pods-vk-music.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-vk-music.xcconfig"; path = "Pods/Pods-vk-music.xcconfig"; sourceTree = "<group>"; };
+		AFD1982738047793AE433C80 /* Pods-vk-music.testflight.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-vk-music.testflight.xcconfig"; path = "Pods/Target Support Files/Pods-vk-music/Pods-vk-music.testflight.xcconfig"; sourceTree = "<group>"; };
+		D910A8FBE2565615B09CCB36 /* Pods-vk-music.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-vk-music.debug.xcconfig"; path = "Pods/Target Support Files/Pods-vk-music/Pods-vk-music.debug.xcconfig"; sourceTree = "<group>"; };
 		E4822EED089B426CB0C71B9F /* libPods-vk-music.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-vk-music.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -72,6 +74,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0A4B0E207D81B3191765860D /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				D910A8FBE2565615B09CCB36 /* Pods-vk-music.debug.xcconfig */,
+				73CE289D542B671443CECC2B /* Pods-vk-music.release.xcconfig */,
+				AFD1982738047793AE433C80 /* Pods-vk-music.testflight.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		18F7D9386132495D83DCFB79 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -87,8 +99,8 @@
 				7F6EB53A19DED56C006E0F6D /* Thirdparty */,
 				7F20FD3A199219A300F5322B /* vk-music */,
 				7F20FD39199219A300F5322B /* Products */,
-				8AEB5697FC664772BD0D1442 /* Pods-vk-music.xcconfig */,
 				18F7D9386132495D83DCFB79 /* Frameworks */,
+				0A4B0E207D81B3191765860D /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -285,7 +297,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Pods-vk-music-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-vk-music/Pods-vk-music-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -408,7 +420,7 @@
 		};
 		7F20FD57199219A400F5322B /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8AEB5697FC664772BD0D1442 /* Pods-vk-music.xcconfig */;
+			baseConfigurationReference = D910A8FBE2565615B09CCB36 /* Pods-vk-music.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -425,7 +437,7 @@
 		};
 		7F20FD58199219A400F5322B /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8AEB5697FC664772BD0D1442 /* Pods-vk-music.xcconfig */;
+			baseConfigurationReference = 73CE289D542B671443CECC2B /* Pods-vk-music.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -439,64 +451,6 @@
 			};
 			name = Release;
 		};
-		7F6EB52319DD8E35006E0F6D /* TestFlight */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				COPY_PHASE_STRIP = YES;
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				MTL_ENABLE_DEBUG_INFO = NO;
-				OTHER_SWIFT_FLAGS = "";
-				SDKROOT = iphoneos;
-				VALIDATE_PRODUCT = YES;
-			};
-			name = TestFlight;
-		};
-		7F6EB52419DD8E35006E0F6D /* TestFlight */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8AEB5697FC664772BD0D1442 /* Pods-vk-music.xcconfig */;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CLANG_ENABLE_MODULES = YES;
-				CURRENT_PROJECT_VERSION = 3;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"$(inherited)",
-					"COCOAPODS=1",
-					"TESTFLIGHT=1",
-				);
-				INFOPLIST_FILE = "vk-music/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				OTHER_SWIFT_FLAGS = "-DTESTFLIGHT";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "vk-music/vk-music-Bridging-Header.h";
-			};
-			name = TestFlight;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -505,7 +459,6 @@
 			buildConfigurations = (
 				7F20FD54199219A400F5322B /* Debug */,
 				7F20FD55199219A400F5322B /* Release */,
-				7F6EB52319DD8E35006E0F6D /* TestFlight */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -515,7 +468,6 @@
 			buildConfigurations = (
 				7F20FD57199219A400F5322B /* Debug */,
 				7F20FD58199219A400F5322B /* Release */,
-				7F6EB52419DD8E35006E0F6D /* TestFlight */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
