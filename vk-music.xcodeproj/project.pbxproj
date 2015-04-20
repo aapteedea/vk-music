@@ -26,7 +26,6 @@
 		7F8BB8261A34F5E6000740FE /* TableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F8BB8251A34F5E6000740FE /* TableViewController.swift */; };
 		7FC0079C19D0B0D90051B39A /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FC0079B19D0B0D90051B39A /* Utilities.swift */; };
 		7FC007A219D0B8030051B39A /* PlayerNavigationBarView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7FC007A119D0B8030051B39A /* PlayerNavigationBarView.xib */; };
-		7FDAA04119D1710E0089487E /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FDAA04019D1710E0089487E /* UIColor+Extension.swift */; };
 		A83F8A2295DE421395298A33 /* libPods-vk-music.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4822EED089B426CB0C71B9F /* libPods-vk-music.a */; };
 /* End PBXBuildFile section */
 
@@ -56,7 +55,6 @@
 		7F8BB8251A34F5E6000740FE /* TableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TableViewController.swift; path = Controllers/TableViewController.swift; sourceTree = "<group>"; };
 		7FC0079B19D0B0D90051B39A /* Utilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Utilities.swift; path = Models/Utilities.swift; sourceTree = "<group>"; };
 		7FC007A119D0B8030051B39A /* PlayerNavigationBarView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = PlayerNavigationBarView.xib; path = Resources/PlayerNavigationBarView.xib; sourceTree = "<group>"; };
-		7FDAA04019D1710E0089487E /* UIColor+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "UIColor+Extension.swift"; path = "Models/UIColor+Extension.swift"; sourceTree = "<group>"; };
 		AFD1982738047793AE433C80 /* Pods-vk-music.testflight.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-vk-music.testflight.xcconfig"; path = "Pods/Target Support Files/Pods-vk-music/Pods-vk-music.testflight.xcconfig"; sourceTree = "<group>"; };
 		D910A8FBE2565615B09CCB36 /* Pods-vk-music.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-vk-music.debug.xcconfig"; path = "Pods/Target Support Files/Pods-vk-music/Pods-vk-music.debug.xcconfig"; sourceTree = "<group>"; };
 		E4822EED089B426CB0C71B9F /* libPods-vk-music.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-vk-music.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -161,11 +159,10 @@
 				7F22D18E19925D3D0094C3EE /* DataFetcher.swift */,
 				7F3BE35319D03A9700E9219C /* DataManager.swift */,
 				7F7952F81994C2EB0010DCF9 /* DownloadManager.swift */,
+				7FC0079B19D0B0D90051B39A /* Utilities.swift */,
+				7F3BE34E19CE1BCF00E9219C /* AudioPlayer.swift */,
 				7F3BE35719D04DCD00E9219C /* Audio.swift */,
 				7F66BDAB1A398BAB00EF217A /* Playlist.swift */,
-				7F3BE34E19CE1BCF00E9219C /* AudioPlayer.swift */,
-				7FC0079B19D0B0D90051B39A /* Utilities.swift */,
-				7FDAA04019D1710E0089487E /* UIColor+Extension.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -317,7 +314,6 @@
 				7F3BE35819D04DCD00E9219C /* Audio.swift in Sources */,
 				7F7952F91994C2EB0010DCF9 /* DownloadManager.swift in Sources */,
 				7F20FD671992383C00F5322B /* DownloadsViewController.swift in Sources */,
-				7FDAA04119D1710E0089487E /* UIColor+Extension.swift in Sources */,
 				7F22D18F19925D3D0094C3EE /* DataFetcher.swift in Sources */,
 				7F8BB8261A34F5E6000740FE /* TableViewController.swift in Sources */,
 				7F3BE34919CE0BCC00E9219C /* PlayerViewController.swift in Sources */,

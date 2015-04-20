@@ -11,21 +11,18 @@ import Foundation
 
 let NewFilesAvailableNotification = "NewFilesAvailableNotification"
 
-private var _sharedDownloadManager: DownloadManager? = nil
-
 class DownloadManager: NSObject {
+    
+    static let sharedManager = DownloadManager()
     
     var configuration: NSURLSessionConfiguration!
     var manager: AFURLSessionManager!
     lazy var activeTasks = [String:NSURLSessionDownloadTask]()
     
-    class func sharedManager() -> DownloadManager {
-        if (_sharedDownloadManager == nil) {
-            _sharedDownloadManager = DownloadManager()
-            _sharedDownloadManager!.configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
-            _sharedDownloadManager!.manager = AFURLSessionManager(sessionConfiguration: _sharedDownloadManager!.configuration)
-        }
-        return _sharedDownloadManager!;
+    override init() {
+        self.configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
+        self.manager = AFURLSessionManager(sessionConfiguration: self.configuration)
+        super.init()
     }
         
     func startDownload(URL: NSURL!, suggestedFilename: String? = nil) -> NSURLSessionDownloadTask! {

@@ -19,6 +19,9 @@ protocol PlayerViewControllerDelegate: class {
 }
 
 class PlayerViewController: UIViewController {
+    
+    static let sharedInstance = PlayerViewController.instantiateFromStoryBoard()
+    
     @IBOutlet weak var albumArtImageView: UIImageView!
     @IBOutlet weak var trackNumberLabel: UILabel!
     @IBOutlet weak var elapsedTimeLabel: UILabel!
@@ -28,18 +31,18 @@ class PlayerViewController: UIViewController {
     @IBOutlet weak var playButton: UIButton!
     @IBOutlet weak var fastRewindButton: UIButton!
     @IBOutlet weak var volumeView: MPVolumeView!
-    weak var delegate: PlayerViewControllerDelegate?
+
     private var navigationBarView = NSBundle.mainBundle().loadNibNamed("PlayerNavigationBarView", owner: nil, options: nil)[0] as! UIView
-    
-    class func sharedInstance() -> PlayerViewController {
-        if (_sharedPlayerViewController == nil) {
-            var storyboard = UIStoryboard(name: "Main", bundle: NSBundle.mainBundle())
-            _sharedPlayerViewController = storyboard.instantiateViewControllerWithIdentifier("playerViewController") as? PlayerViewController
-        }
-        return _sharedPlayerViewController;
-    }
+    weak var delegate: PlayerViewControllerDelegate?
     
     // MARK: - Private Methods
+    
+    private class func instantiateFromStoryBoard() -> PlayerViewController {
+        var storyboard = UIStoryboard(name: "Main", bundle: NSBundle.mainBundle())
+        return storyboard.instantiateViewControllerWithIdentifier("playerViewController") as! PlayerViewController
+    }
+    
+    // MARK: - Public Methods
     
     func clearTrackInfo() {
         (self.navigationBarView.viewWithTag(1) as! UILabel).text = nil
@@ -53,7 +56,7 @@ class PlayerViewController: UIViewController {
     func updateTackInfo () {
         self.clearTrackInfo()
         
-        if let track = AudioPlayer.sharedAudioPlayer().currentTrack {
+        if let track = AudioPlayer.sharedAudioPlayer.currentTrack {
             (self.navigationBarView.viewWithTag(1) as! UILabel).text = track.title
             (self.navigationBarView.viewWithTag(2) as! UILabel).text = track.artist
             
@@ -65,24 +68,24 @@ class PlayerViewController: UIViewController {
 //                self.albumArtImageView.image = image
 //            }
             
-            var index = AudioPlayer.sharedAudioPlayer().playlist?.indexOfTrack(track)
-            var count = AudioPlayer.sharedAudioPlayer().playlist?.count()
+            var index = AudioPlayer.sharedAudioPlayer.playlist?.indexOfTrack(track)
+            var count = AudioPlayer.sharedAudioPlayer.playlist?.count()
             if let index = index { self.trackNumberLabel?.text = "\(index+1) of \(Int(count!))" }
         }
     }
 
     func updateProgress() {
-        self.progressSlider.value = Float(AudioPlayer.sharedAudioPlayer()._stk_audioPlayer.progress / AudioPlayer.sharedAudioPlayer()._stk_audioPlayer.duration)
+        self.progressSlider.value = Float(AudioPlayer.sharedAudioPlayer._stk_audioPlayer.progress / AudioPlayer.sharedAudioPlayer._stk_audioPlayer.duration)
         
-        var elapsed = AudioPlayer.sharedAudioPlayer()._stk_audioPlayer.progress as NSTimeInterval
+        var elapsed = AudioPlayer.sharedAudioPlayer._stk_audioPlayer.progress as NSTimeInterval
         self.elapsedTimeLabel.text = Utilities.prettifyTime(elapsed)
 
-        var remaining = (AudioPlayer.sharedAudioPlayer()._stk_audioPlayer.duration - AudioPlayer.sharedAudioPlayer()._stk_audioPlayer.progress) as NSTimeInterval
+        var remaining = (AudioPlayer.sharedAudioPlayer._stk_audioPlayer.duration - AudioPlayer.sharedAudioPlayer._stk_audioPlayer.progress) as NSTimeInterval
         self.remainingTimeLabel.text = "-\(Utilities.prettifyTime(remaining))"
     }
     
     func configureControlButtons() {
-        switch (AudioPlayer.sharedAudioPlayer()._stk_audioPlayer.state) {
+        switch (AudioPlayer.sharedAudioPlayer._stk_audioPlayer.state) {
             case .Ready, .Paused, .Stopped, .Error, .Disposed:
                 self.playButton.setImage(UIImage(named: "UIButtonBarPlay"), forState: .Normal)
             case .Playing, .Buffering:

@@ -18,7 +18,7 @@ class SearchViewController: TableViewController, UISearchBarDelegate, SearchResu
     }
     var playlist: Playlist? {
         didSet {
-            AudioPlayer.sharedAudioPlayer().playlist = playlist
+            AudioPlayer.sharedAudioPlayer.playlist = playlist
         }
     }
 
@@ -89,10 +89,10 @@ class SearchViewController: TableViewController, UISearchBarDelegate, SearchResu
         
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         if let track = playlist?.trackAtIndex(indexPath.row) {
-            AudioPlayer.sharedAudioPlayer().playlist = self.playlist
-            AudioPlayer.sharedAudioPlayer().play(track)
+            AudioPlayer.sharedAudioPlayer.playlist = self.playlist
+            AudioPlayer.sharedAudioPlayer.play(track)
         }
-        self.navigationController?.pushViewController(PlayerViewController.sharedInstance(), animated: true)
+        self.navigationController?.pushViewController(PlayerViewController.sharedInstance, animated: true)
     }
 
     // MARK: - UISearchBarDelegate
@@ -115,7 +115,7 @@ class SearchViewController: TableViewController, UISearchBarDelegate, SearchResu
             var vkID = song.vkDictionary!.objectForKey("id") as! Int
             var fileName = "\(song.title!) - \(song.artist!)_\(vkID).mp3"
 
-            song.downloadTask = DownloadManager.sharedManager().startDownload(song.remoteURL!, suggestedFilename: fileName)
+            song.downloadTask = DownloadManager.sharedManager.startDownload(song.remoteURL!, suggestedFilename: fileName)
             searchResultCell.progressButton?.setProgress(downloadProgressOfTask: song.downloadTask!)
         }
     }
@@ -139,7 +139,7 @@ class SearchViewController: TableViewController, UISearchBarDelegate, SearchResu
             self.tableView.deselectRowAtIndexPath(indexPath, animated: true)
         }
         
-        var trackIndex: Int? = find(self.songs, AudioPlayer.sharedAudioPlayer().currentTrack!)
+        var trackIndex: Int? = find(self.songs, AudioPlayer.sharedAudioPlayer.currentTrack!)
         if let trackIndex = trackIndex {
             var indexPath = NSIndexPath(forRow: trackIndex, inSection: 0)
             self.tableView.selectRowAtIndexPath(indexPath, animated: false, scrollPosition: .None)

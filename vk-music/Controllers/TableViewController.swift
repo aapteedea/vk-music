@@ -36,7 +36,7 @@ class TableViewController: UITableViewController {
     // MARK: - Actions
     
     func showPlayerBarButtonTapped(sender: AnyObject) {
-        self.navigationController?.pushViewController(PlayerViewController.sharedInstance(), animated: true)
+        self.navigationController?.pushViewController(PlayerViewController.sharedInstance, animated: true)
     }
 
     // MARK: - Table view data source

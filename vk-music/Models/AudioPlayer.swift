@@ -11,14 +11,15 @@ import AVFoundation
 
 let AudioPlayerDidStartPlayingNotification = "AudioPlayerDidStartPlayingNotification"
 
-private var _sharedAudioPlayer: AudioPlayer!
-
 class AudioPlayer: NSObject, STKAudioPlayerDelegate, PlayerViewControllerDelegate {
+    
+    static let sharedAudioPlayer = AudioPlayer()
+    
     var _stk_audioPlayer: STKAudioPlayer
     var currentlyPlayingURL: NSURL?
     var currentTrack: Audio? {
         didSet {
-            PlayerViewController.sharedInstance().updateTackInfo()
+            PlayerViewController.sharedInstance.updateTackInfo()
         }
     }
     var playlist: Playlist?
@@ -47,11 +48,10 @@ class AudioPlayer: NSObject, STKAudioPlayerDelegate, PlayerViewControllerDelegat
         UIApplication.sharedApplication().beginReceivingRemoteControlEvents()        
         
         self._stk_audioPlayer.delegate = self
-        PlayerViewController.sharedInstance().delegate = self
+        PlayerViewController.sharedInstance.delegate = self
 
         // Register for notifications
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "routeDidChange:", name:AVAudioSessionRouteChangeNotification, object: nil)
-        
     }
     
     deinit {
@@ -59,13 +59,6 @@ class AudioPlayer: NSObject, STKAudioPlayerDelegate, PlayerViewControllerDelegat
     }
     
     // MARK: - Public methods
-    
-    class func sharedAudioPlayer() -> AudioPlayer {
-        if (_sharedAudioPlayer == nil) {
-            _sharedAudioPlayer = AudioPlayer()
-        }
-        return _sharedAudioPlayer
-    }
     
     func play (audio: Audio, force: Bool = false) {
         if let URL = audio.fileURL {
@@ -78,16 +71,16 @@ class AudioPlayer: NSObject, STKAudioPlayerDelegate, PlayerViewControllerDelegat
     
     func pause() {
         self._stk_audioPlayer.pause()
-        PlayerViewController.sharedInstance().configureControlButtons()
+        PlayerViewController.sharedInstance.configureControlButtons()
     }
     
     func resume() {
         self._stk_audioPlayer.resume()
-        PlayerViewController.sharedInstance().configureControlButtons()        
+        PlayerViewController.sharedInstance.configureControlButtons()
     }
     
     func togglePlayPause() {
-        switch (AudioPlayer.sharedAudioPlayer()._stk_audioPlayer.state) {
+        switch (AudioPlayer.sharedAudioPlayer._stk_audioPlayer.state) {
             case .Ready, .Paused, .Stopped, .Error, .Disposed:
                 self.resume()
             case .Playing, .Buffering:

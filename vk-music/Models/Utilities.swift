@@ -8,6 +8,20 @@
 
 import UIKit
 
+var _defaultBlueTintColor: UIColor?
+
+extension UIColor {
+    
+    class func defaultBlueTintColor() -> UIColor {
+        if (_defaultBlueTintColor == nil) {
+            var tmpButton = UIButton.buttonWithType(.System) as! UIButton
+            _defaultBlueTintColor = tmpButton.titleColorForState(.Normal)
+        }
+        return _defaultBlueTintColor!
+    }
+    
+}
+
 class Utilities: NSObject {
 
     class func prettifyTime(seconds: NSTimeInterval) -> String {

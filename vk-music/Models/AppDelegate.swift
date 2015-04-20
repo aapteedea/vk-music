@@ -18,14 +18,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, VKSdkDelegate {
         window?.backgroundColor = UIColor.whiteColor()
         window?.makeKeyAndVisible()
 
-        VKSdk.initializeWithDelegate(self, andAppId: "4493769")
+        let appId = "4493769"
+        VKSdk.initializeWithDelegate(self, andAppId: appId)
         if VKSdk.wakeUpSession() {
-            NSLog("Session started.")
+            NSLog("VK session started")
         }
         
-        var token:VKAccessToken? = VKAccessToken(fromDefaults: "VKAccessToken")
-        if let aToken = token {
-            NSLog("%@", aToken)
+        if let token = VKAccessToken(fromDefaults: "VKAccessToken") {
+            NSLog("%@", token)
         } else {
             var permission = ["audio"]
             VKSdk.authorize(permission)
@@ -89,15 +89,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate, VKSdkDelegate {
         if event.type == .RemoteControl {
             switch event.subtype {
             case .RemoteControlPlay:
-                AudioPlayer.sharedAudioPlayer().resume()
+                AudioPlayer.sharedAudioPlayer.resume()
             case .RemoteControlPause:
-                AudioPlayer.sharedAudioPlayer().pause()
+                AudioPlayer.sharedAudioPlayer.pause()
             case .RemoteControlTogglePlayPause:
-                AudioPlayer.sharedAudioPlayer().togglePlayPause()
+                AudioPlayer.sharedAudioPlayer.togglePlayPause()
             case .RemoteControlPreviousTrack:
-                AudioPlayer.sharedAudioPlayer().previousTrack(userAction: true)
+                AudioPlayer.sharedAudioPlayer.previousTrack(userAction: true)
             case .RemoteControlNextTrack:
-                AudioPlayer.sharedAudioPlayer().nextTrack(userAction: true)
+                AudioPlayer.sharedAudioPlayer.nextTrack(userAction: true)
             default: break
             }
         }

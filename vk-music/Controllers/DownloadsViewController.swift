@@ -19,7 +19,7 @@ class DownloadsViewController: TableViewController, DirectoryWatcherDelegate {
     }
     var playlist: Playlist? {
         didSet {
-            AudioPlayer.sharedAudioPlayer().playlist = playlist
+            AudioPlayer.sharedAudioPlayer.playlist = playlist
         }
     }
     
@@ -99,10 +99,10 @@ class DownloadsViewController: TableViewController, DirectoryWatcherDelegate {
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         if let track = playlist?.trackAtIndex(indexPath.row) {
-            AudioPlayer.sharedAudioPlayer().playlist = self.playlist
-            AudioPlayer.sharedAudioPlayer().play(track)
+            AudioPlayer.sharedAudioPlayer.playlist = self.playlist
+            AudioPlayer.sharedAudioPlayer.play(track)
         }
-        self.navigationController?.pushViewController(PlayerViewController.sharedInstance(), animated: true)
+        self.navigationController?.pushViewController(PlayerViewController.sharedInstance, animated: true)
     }
 
     override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
@@ -142,7 +142,7 @@ class DownloadsViewController: TableViewController, DirectoryWatcherDelegate {
             self.tableView.deselectRowAtIndexPath(indexPath, animated: true)
         }
 
-        var trackIndex: Int? = find(self.audioFiles, AudioPlayer.sharedAudioPlayer().currentTrack!)
+        var trackIndex: Int? = find(self.audioFiles, AudioPlayer.sharedAudioPlayer.currentTrack!)
         if let trackIndex = trackIndex {
             var indexPath = NSIndexPath(forRow: trackIndex, inSection: 0)
             self.tableView.selectRowAtIndexPath(indexPath, animated: false, scrollPosition: .None)
