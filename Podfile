@@ -2,8 +2,8 @@
 # platform :ios, “6.0”
 
 target "vk-music" do
-pod 'VK-ios-sdk'
-pod 'AFNetworking'
-pod 'StreamingKit'
-end
 
+pod 'VK-ios-sdk'
+pod 'StreamingKit'
+
+end

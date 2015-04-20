@@ -67,7 +67,9 @@ class SearchViewController: TableViewController, UISearchBarDelegate, SearchResu
         } else {
             DataFetcher.audioInfo(song.remoteURL!, successBlock: { (size) -> Void in
                 song.size = size
-                tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
+                })
             })
         }
         

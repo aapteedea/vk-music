@@ -1,35 +1,12 @@
 PODS:
-  - AFNetworking (2.5.2):
-    - AFNetworking/NSURLConnection (= 2.5.2)
-    - AFNetworking/NSURLSession (= 2.5.2)
-    - AFNetworking/Reachability (= 2.5.2)
-    - AFNetworking/Security (= 2.5.2)
-    - AFNetworking/Serialization (= 2.5.2)
-    - AFNetworking/UIKit (= 2.5.2)
-  - AFNetworking/NSURLConnection (2.5.2):
-    - AFNetworking/Reachability
-    - AFNetworking/Security
-    - AFNetworking/Serialization
-  - AFNetworking/NSURLSession (2.5.2):
-    - AFNetworking/Reachability
-    - AFNetworking/Security
-    - AFNetworking/Serialization
-  - AFNetworking/Reachability (2.5.2)
-  - AFNetworking/Security (2.5.2)
-  - AFNetworking/Serialization (2.5.2)
-  - AFNetworking/UIKit (2.5.2):
-    - AFNetworking/NSURLConnection
-    - AFNetworking/NSURLSession
   - StreamingKit (0.1.25)
   - VK-ios-sdk (1.1.6)
 
 DEPENDENCIES:
-  - AFNetworking
   - StreamingKit
   - VK-ios-sdk
 
 SPEC CHECKSUMS:
-  AFNetworking: fefbce9660acb17f48ae0011292d4da0f457bf36
   StreamingKit: f00c054cfd0f59d88c8be7a2270e208302ce48c4
   VK-ios-sdk: 6d6f9e503e51611ba600c128cc6dab01dcb0fa84
 

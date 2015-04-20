@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import MediaPlayer
 
 private var _sharedPlayerViewController: PlayerViewController!
 

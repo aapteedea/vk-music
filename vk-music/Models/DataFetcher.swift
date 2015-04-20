@@ -39,22 +39,18 @@ class DataFetcher: NSObject {
     
     class func audioInfo(URL: NSURL, successBlock: ((size: Int) -> Void)!, failureBlock: ((error: NSError!) -> Void)? = nil) {
 
-        var URLRequest = NSMutableURLRequest(URL: URL)
-        URLRequest.HTTPMethod = "HEAD"
+        var request = NSMutableURLRequest(URL: URL)
+        request.HTTPMethod = "HEAD"
         
-        var operation = AFHTTPRequestOperation(request: URLRequest)
-        operation.setCompletionBlockWithSuccess({ (operation, responseObject) -> Void in
-
-            var headers = operation.response.allHeaderFields as NSDictionary
-            var contentLength = headers.objectForKey("Content-Length") as! String
-
-            successBlock(size: contentLength.toInt()!)
-            
-            }) { (operation, error) -> Void in
-                if let block = failureBlock { block(error: error) }
-        }
-        
-        NSOperationQueue.mainQueue().addOperation(operation)
+        NSURLSession.sharedSession().dataTaskWithRequest(request, completionHandler: { (data, response, error) -> Void in
+            if let error = error {
+                NSLog("\(error)")
+                failureBlock?(error: error)
+                return
+            }
+            var contentLength = response.expectedContentLength
+            successBlock?(size: Int(contentLength))
+        }).resume()
     }
     
 }
