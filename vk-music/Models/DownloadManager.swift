@@ -15,36 +15,23 @@ class DownloadManager: NSObject, NSURLSessionDownloadDelegate {
     
     static let sharedManager = DownloadManager()
     
-    var configuration: NSURLSessionConfiguration!
     var session: NSURLSession!
     var documentsDirectory: String!
-    var documentsDirectoryURL: NSURL!
-    var tmpDirectoryURL: NSURL!
-
     lazy var activeTasks = [String:(NSURLSessionDownloadTask, String?)]()
     
     override init() {
         super.init()
-        self.configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
-        self.session = NSURLSession(configuration: self.configuration, delegate: self, delegateQueue: nil)
-
         self.documentsDirectory = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true).first as! String
-        self.documentsDirectoryURL = NSURL(fileURLWithPath: documentsDirectory, isDirectory: true)
-        self.tmpDirectoryURL = NSURL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
+        
+        var configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
+        self.session = NSURLSession(configuration: configuration, delegate: self, delegateQueue: nil)
     }
         
     func startDownload(URL: NSURL!, suggestedFilename: String? = nil) -> NSURLSessionDownloadTask! {
-        let request = NSURLRequest(URL: URL)
-        var downloadTask = self.session.downloadTaskWithRequest(request)
+        var downloadTask = self.session.downloadTaskWithURL(URL)
         downloadTask.resume()
         self.activeTasks[URL.absoluteString!] = (downloadTask, suggestedFilename)
         return downloadTask
-    }
-    
-    func cancelDonwload(URL: NSURL) -> Void {
-        if let (task, _)  = self.activeTasks[URL.absoluteString!] {
-            task.cancel()
-        }
     }
     
     func sanitizeFileName(fileName: String) -> String {
