@@ -47,6 +47,11 @@ class DownloadManager: NSObject, NSURLSessionDownloadDelegate {
         }
     }
     
+    func sanitizeFileName(fileName: String) -> String {
+        var illegalFileNameCharacters = NSCharacterSet(charactersInString:" /\\?%*|\"<>")
+        return "_".join(fileName.componentsSeparatedByCharactersInSet(illegalFileNameCharacters))
+    }
+    
     // MARK: - NSURLSessionDownloadDelegate
     
     func URLSession(session: NSURLSession, downloadTask: NSURLSessionDownloadTask, didFinishDownloadingToURL location: NSURL) {
@@ -54,15 +59,19 @@ class DownloadManager: NSObject, NSURLSessionDownloadDelegate {
         if fileName == nil {
            fileName = downloadTask.response?.suggestedFilename
         }
-        
-        var destURL = self.documentsDirectoryURL.URLByAppendingPathComponent(fileName!)
+        fileName = self.sanitizeFileName(fileName!)
+
+        var filePath = self.documentsDirectory.stringByAppendingPathComponent(fileName!)
+        var destURL = NSURL(fileURLWithPath: filePath)
+
         var fileError: NSError?
-        NSFileManager.defaultManager().moveItemAtURL(location, toURL: destURL, error: &fileError)
+        NSFileManager.defaultManager().moveItemAtURL(location, toURL: destURL!, error: &fileError)
         if let error = fileError {
             NSLog("error: \(error)");
             return
         }
 
+        NSLog("saved as: \(fileName!)");
         NSNotificationCenter.defaultCenter().postNotificationName(NewFilesAvailableNotification, object: nil)
     }
     
