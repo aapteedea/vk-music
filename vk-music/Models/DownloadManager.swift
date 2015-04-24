@@ -11,55 +11,100 @@ import Foundation
 
 let NewFilesAvailableNotification = "NewFilesAvailableNotification"
 
-class DownloadManager: NSObject, NSURLSessionDownloadDelegate {
+class DownloadOperation: NSOperation, NSURLSessionTaskDelegate, NSURLSessionDownloadDelegate {
     
-    static let sharedManager = DownloadManager()
-    
+    private var done = false
+    var URL: NSURL!
+    var suggestedFilename: String?
     var session: NSURLSession!
-    var documentsDirectory: String!
-    lazy var activeTasks = [String:(NSURLSessionDownloadTask, String?)]()
+    var downloadTask: NSURLSessionDownloadTask!
+    var previouslyLoggedValue: Int = -1
     
-    override init() {
+    init(URL: NSURL, suggestedFilename: String?) {
         super.init()
-        self.documentsDirectory = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true).first as! String
+        self.URL = URL
+        self.suggestedFilename = suggestedFilename
         
-        var configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
+        let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
         self.session = NSURLSession(configuration: configuration, delegate: self, delegateQueue: nil)
+        self.downloadTask = session.downloadTaskWithURL(self.URL)
     }
-        
-    func startDownload(URL: NSURL!, suggestedFilename: String? = nil) -> NSURLSessionDownloadTask! {
-        var downloadTask = self.session.downloadTaskWithURL(URL)
-        downloadTask.resume()
-        self.activeTasks[URL.absoluteString!] = (downloadTask, suggestedFilename)
-        return downloadTask
+    
+    override func main() {
+        if self.cancelled { return }
+        self.downloadTask!.resume()
+        do {
+            if self.cancelled {
+                self.downloadTask.cancel()
+            }
+            NSRunLoop.currentRunLoop().runMode(NSDefaultRunLoopMode, beforeDate: NSDate.distantFuture() as! NSDate)
+        }
+        while (!self.done)
     }
     
     func sanitizeFileName(fileName: String) -> String {
         var illegalFileNameCharacters = NSCharacterSet(charactersInString:" /\\?%*|\"<>")
         return "_".join(fileName.componentsSeparatedByCharactersInSet(illegalFileNameCharacters))
     }
+    // MARK: - NSURLSessionTaskDelegate
     
+    func URLSession(session: NSURLSession, task: NSURLSessionTask, didCompleteWithError error: NSError?) {
+        if let error = error { NSLog("error: \(error)") }
+        self.done = true
+    }
+
     // MARK: - NSURLSessionDownloadDelegate
     
+    func URLSession(session: NSURLSession, downloadTask: NSURLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
+        if let contentLenght = downloadTask.response?.expectedContentLength {
+            let progress = Double(totalBytesWritten) / Double(contentLenght)
+            let progressPercentage = Int(progress * 100)
+            if (progressPercentage != self.previouslyLoggedValue) {
+                previouslyLoggedValue = progressPercentage
+                NSLog("completed: \(progressPercentage)%%")
+            }
+        }
+    }
+    
     func URLSession(session: NSURLSession, downloadTask: NSURLSessionDownloadTask, didFinishDownloadingToURL location: NSURL) {
-        var (_, fileName) = self.activeTasks[downloadTask.originalRequest.URL!.absoluteString!]!
+        var fileName = self.suggestedFilename
         if fileName == nil {
-           fileName = downloadTask.response?.suggestedFilename
+            fileName = downloadTask.response?.suggestedFilename
         }
         fileName = self.sanitizeFileName(fileName!)
-
-        var filePath = self.documentsDirectory.stringByAppendingPathComponent(fileName!)
+        
+        var filePath = DownloadManager.sharedManager.documentsDirectory.stringByAppendingPathComponent(fileName!)
         var destURL = NSURL(fileURLWithPath: filePath)
-
+        
         var fileError: NSError?
         NSFileManager.defaultManager().moveItemAtURL(location, toURL: destURL!, error: &fileError)
         if let error = fileError {
             NSLog("error: \(error)");
             return
         }
-
+        
         NSLog("saved as: \(fileName!)");
         NSNotificationCenter.defaultCenter().postNotificationName(NewFilesAvailableNotification, object: nil)
     }
+}
+
+class DownloadManager: NSObject {
     
+    static let sharedManager = DownloadManager()
+    
+    var documentsDirectory: String!
+    var operationQueue: NSOperationQueue!
+    
+    override init() {
+        super.init()
+        self.documentsDirectory = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true).first as! String
+        self.operationQueue = NSOperationQueue()
+        self.operationQueue.maxConcurrentOperationCount = 1
+    }
+        
+    func startDownload(URL: NSURL!, suggestedFilename: String? = nil) -> DownloadOperation {
+        var operation = DownloadOperation(URL: URL, suggestedFilename: suggestedFilename)
+        self.operationQueue.addOperation(operation)
+        return operation
+    }
 }

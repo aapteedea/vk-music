@@ -30,7 +30,7 @@ class Audio: NSObject, Printable {
         return 0
     }
     
-    var downloadTask: NSURLSessionDownloadTask?
+    var downloadOperation: DownloadOperation?
     
     var vkDictionary: NSDictionary?
     
@@ -54,7 +54,15 @@ class Audio: NSObject, Printable {
         self.vkDictionary = vkDictionary
 
         self.artist = vkDictionary.objectForKey("artist") as? String
+        if let range = self.artist?.rangeOfCharacterFromSet(NSCharacterSet.newlineCharacterSet()) {
+            self.artist = self.artist?.substringToIndex(range.startIndex)
+        }
+
         self.title = vkDictionary.objectForKey("title") as? String
+        if let range = self.title?.rangeOfCharacterFromSet(NSCharacterSet.newlineCharacterSet()) {
+            self.title = self.title?.substringToIndex(range.startIndex)
+        }
+
         self.duration = vkDictionary.objectForKey("duration") as! Int
         
         if let URLString = vkDictionary.objectForKey("url") as? String {

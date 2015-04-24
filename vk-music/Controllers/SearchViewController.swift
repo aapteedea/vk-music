@@ -73,13 +73,14 @@ class SearchViewController: TableViewController, UISearchBarDelegate, SearchResu
             })
         }
         
-        if let task = song.downloadTask {
-            if task.state == .Running {
+        if let operation = song.downloadOperation {
+            switch operation.downloadTask.state {
+            case .Running:
                 cell.state = .Progress
-                cell.progressButton.setProgress(downloadProgressOfTask: task)
-            } else if task.state == .Completed {
+                cell.progressButton.setProgress(downloadProgressOfOperation: song.downloadOperation!)
+            case .Completed:
                 cell.state = .Complete
-            } else {
+            default:
                 cell.state = .Normal
             }
         }
@@ -117,17 +118,16 @@ class SearchViewController: TableViewController, UISearchBarDelegate, SearchResu
             var vkID = song.vkDictionary!.objectForKey("id") as! Int
             var fileName = "\(song.title!) - \(song.artist!)_\(vkID).mp3"
 
-            song.downloadTask = DownloadManager.sharedManager.startDownload(song.remoteURL!, suggestedFilename: fileName)
-            searchResultCell.progressButton?.setProgress(downloadProgressOfTask: song.downloadTask!)
+            song.downloadOperation = DownloadManager.sharedManager.startDownload(song.remoteURL!, suggestedFilename: fileName)
+            searchResultCell.progressButton?.setProgress(downloadProgressOfOperation: song.downloadOperation!)
         }
     }
 
     func searchResultCell(searchResultCell: SearchResultCell!, stopButtonPressed stopButton: ProgressButton!) {
         if let indexPath = tableView.indexPathForCell(searchResultCell) {
             var song = self.songs[indexPath.row]
-            if let task = song.downloadTask {
-                task.cancel()
-                song.downloadTask = nil
+            if let operation = song.downloadOperation {
+                operation.cancel()
                 self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
             }
         }

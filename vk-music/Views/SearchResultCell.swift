@@ -54,6 +54,7 @@ class SearchResultCell: UITableViewCell, ProgressButtonDelegate {
 
         self.progressButton.configure()
         self.progressButton.delegate = self
+        self.progressButton.progress = 0.0
         
         self.state = .Normal
         
@@ -105,7 +106,6 @@ class SearchResultCell: UITableViewCell, ProgressButtonDelegate {
     // MARK: - ProgressButtonDelegate
     
     func progressButton(progressButton: ProgressButton, didUpdateProgress progress: Double) {
-        NSLog("\(progress)")
         if progress >= 1.0 {
             self.state = .Complete
         }

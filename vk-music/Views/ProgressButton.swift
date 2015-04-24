@@ -19,7 +19,7 @@ class ProgressButton: UIButton {
     private var backgroundLayer: CAShapeLayer!
     private var progressLayer: CAShapeLayer!
     var delegate: ProgressButtonDelegate?
-    var task: NSURLSessionDownloadTask?
+    var operation: DownloadOperation?
     
 //    @IBInspectable var progress: Double = 0.0 {
     var progress: Double = 0.0 {
@@ -70,36 +70,41 @@ class ProgressButton: UIButton {
     }
     
     func configure() {
-        if self.task != nil {
+        if self.operation != nil {
             self.stopObserving()
         }
     }
     
-    func setProgress(downloadProgressOfTask task: NSURLSessionDownloadTask) {
-        self.task = task
-        self.task?.addObserver(self, forKeyPath: "countOfBytesReceived", options: .New, context: nil)
-        self.task?.addObserver(self, forKeyPath: "state", options: .New, context: nil)
+    func setProgress(downloadProgressOfOperation operation: DownloadOperation) {
+        self.operation = operation
+        self.operation?.downloadTask.addObserver(self, forKeyPath: "countOfBytesReceived", options: .New, context: nil)
+        self.operation?.downloadTask.addObserver(self, forKeyPath: "state", options: .New, context: nil)
     }
     
     func stopObserving() {
-        self.task?.removeObserver(self, forKeyPath: "state")
-        self.task?.removeObserver(self, forKeyPath: "countOfBytesReceived")
-        self.task = nil
+        self.operation?.downloadTask.removeObserver(self, forKeyPath: "state")
+        self.operation?.downloadTask.removeObserver(self, forKeyPath: "countOfBytesReceived")
+        self.operation = nil
     }
     
     // MARK: KVO
     
     override func observeValueForKeyPath(keyPath: String, ofObject object: AnyObject, change: [NSObject : AnyObject], context: UnsafeMutablePointer<()>) {
         var task = object as! NSURLSessionTask
-
-        if (keyPath == "countOfBytesReceived") {
+        switch keyPath {
+        case "countOfBytesReceived":
             if (task.countOfBytesExpectedToReceive > 0) {
                 dispatch_async(dispatch_get_main_queue(), {
                     self.progress = Double(task.countOfBytesReceived) / Double(task.countOfBytesExpectedToReceive)
                 })
             }
-        } else if (keyPath == "state") {
-            self.stopObserving()
+        case "state":
+            switch task.state {
+            case .Canceling, .Completed:
+                self.stopObserving()
+            default: break
+            }
+        default: break
         }
     }
 }
