@@ -9,7 +9,7 @@
 import UIKit
 import AVFoundation
 
-class Audio: NSObject, Printable {
+class Audio: NSObject {
     
     override var description: String { return fileName! }
     
@@ -38,10 +38,14 @@ class Audio: NSObject, Printable {
         self.fileURL = fileURL
         self.fileName = fileURL.lastPathComponent
         
-        var filePath = fileURL.path
-        var error: NSError?
-        var fileAttributes: NSDictionary? = NSFileManager.defaultManager().attributesOfItemAtPath(filePath!, error: &error)
-        if (error != nil) { super.init(); return }
+        let filePath = fileURL.path
+        var fileAttributes: NSDictionary?
+        do {
+            fileAttributes = try NSFileManager.defaultManager().attributesOfItemAtPath(filePath!)
+        } catch {
+            super.init()
+            return
+        }
 
         self.size = fileAttributes!.objectForKey(NSFileSize) as! Int
         
@@ -73,7 +77,7 @@ class Audio: NSObject, Printable {
     }
     
     func loadMetadata(fileURL: NSURL) {
-        var asset = AVURLAsset(URL: fileURL, options: nil)
+        let asset = AVURLAsset(URL: fileURL, options: nil)
         duration = Int(CMTimeGetSeconds(asset.duration))
         
         if let value = (AVMetadataItem.metadataItemsFromArray(asset.commonMetadata, withKey: AVMetadataCommonKeyArtist, keySpace: AVMetadataKeySpaceCommon).first as? AVMutableMetadataItem)?.value { artist = value as? String }

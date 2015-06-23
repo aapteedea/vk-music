@@ -12,18 +12,18 @@ class DataFetcher: NSObject {
 
     class func searchAudio(searchText: String!, successBlock: ((songs: Array<Audio>!) -> Void)!, failureBlock: ((error: NSError!) -> Void)? = nil) {
         
-        var parameters: [NSObject: AnyObject] = ["q": searchText, "auto_complete": 1, "lyrics": 0, "performer_only": 0, "sort": 2, "search_own": 1, "count": 50]
-        var request = VKRequest(method: "audio.search", andParameters: parameters, andHttpMethod: "GET")
+        let parameters: [NSObject: AnyObject] = ["q": searchText, "auto_complete": 1, "lyrics": 0, "performer_only": 0, "sort": 2, "search_own": 1, "count": 50]
+        let request = VKRequest(method: "audio.search", andParameters: parameters, andHttpMethod: "GET")
 
         request.executeWithResultBlock({ (response: VKResponse!) -> Void in
             
                 var songs: Array<Audio> = []
 
-                var dict = response.json as! NSDictionary
-                var items = dict["items"] as! NSArray
+                let dict = response.json as! NSDictionary
+                let items = dict["items"] as! NSArray
 
                 for item in items {
-                    var song = Audio(vkDictionary: item as! NSDictionary)
+                    let song = Audio(vkDictionary: item as! NSDictionary)
                     songs.append(song)
                 }
                 
@@ -39,7 +39,7 @@ class DataFetcher: NSObject {
     
     class func audioInfo(URL: NSURL, successBlock: ((size: Int) -> Void)!, failureBlock: ((error: NSError!) -> Void)? = nil) {
 
-        var request = NSMutableURLRequest(URL: URL)
+        let request = NSMutableURLRequest(URL: URL)
         request.HTTPMethod = "HEAD"
         
         NSURLSession.sharedSession().dataTaskWithRequest(request, completionHandler: { (data, response, error) -> Void in
@@ -48,9 +48,11 @@ class DataFetcher: NSObject {
                 failureBlock?(error: error)
                 return
             }
-            var contentLength = response.expectedContentLength
-            successBlock?(size: Int(contentLength))
-        }).resume()
+            if let response = response {
+                let contentLength = response.expectedContentLength
+                successBlock?(size: Int(contentLength))
+            }
+        })!.resume()
     }
     
 }

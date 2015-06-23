@@ -37,7 +37,7 @@ class Playlist: NSObject {
     
     func indexOfTrack(audio: Audio?) -> Int {
         if let audio = audio {
-            if let idx = find(self.allTracks, audio) {
+            if let idx = self.allTracks.indexOf(audio) {
                 return idx
             }
         }
@@ -54,7 +54,7 @@ class Playlist: NSObject {
 
         switch self.mode {
         case .RepeatNone:
-            var idx = self.indexOfTrack(self.lastRequestedTrack) - 1
+            let idx = self.indexOfTrack(self.lastRequestedTrack) - 1
             if (idx < 0) {
                 track = nil
             }
@@ -69,7 +69,6 @@ class Playlist: NSObject {
                 idx = self.allTracks.count - 1
             }
             track = self.allTracks[idx]
-        default: track = nil
         }
 
         self.lastRequestedTrack = track
@@ -81,7 +80,7 @@ class Playlist: NSObject {
         
         switch self.mode {
         case .RepeatNone:
-            var idx = self.indexOfTrack(self.lastRequestedTrack) + 1
+            let idx = self.indexOfTrack(self.lastRequestedTrack) + 1
             if (idx == self.allTracks.count) {
                 track = nil
             }
@@ -96,8 +95,6 @@ class Playlist: NSObject {
                 idx = 0
             }
             track = self.allTracks[idx]
-
-        default: track = nil
         }
         
         self.lastRequestedTrack = track

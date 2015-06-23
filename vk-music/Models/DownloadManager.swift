@@ -33,17 +33,17 @@ class DownloadOperation: NSOperation, NSURLSessionTaskDelegate, NSURLSessionDown
     override func main() {
         if self.cancelled { return }
         self.downloadTask!.resume()
-        do {
+        repeat {
             if self.cancelled {
                 self.downloadTask.cancel()
             }
-            NSRunLoop.currentRunLoop().runMode(NSDefaultRunLoopMode, beforeDate: NSDate.distantFuture() as! NSDate)
+            NSRunLoop.currentRunLoop().runMode(NSDefaultRunLoopMode, beforeDate: NSDate.distantFuture() as NSDate)
         }
         while (!self.done)
     }
     
     func sanitizeFileName(fileName: String) -> String {
-        var illegalFileNameCharacters = NSCharacterSet(charactersInString:" /\\?%*|\"<>")
+        let illegalFileNameCharacters = NSCharacterSet(charactersInString:" /\\?%*|\"<>")
         return "_".join(fileName.componentsSeparatedByCharactersInSet(illegalFileNameCharacters))
     }
     // MARK: - NSURLSessionTaskDelegate
@@ -73,12 +73,12 @@ class DownloadOperation: NSOperation, NSURLSessionTaskDelegate, NSURLSessionDown
         }
         fileName = self.sanitizeFileName(fileName!)
         
-        var filePath = DownloadManager.sharedManager.documentsDirectory.stringByAppendingPathComponent(fileName!)
-        var destURL = NSURL(fileURLWithPath: filePath)
+        let filePath = DownloadManager.sharedManager.documentsDirectory.stringByAppendingPathComponent(fileName!)
+        let destURL = NSURL(fileURLWithPath: filePath)
         
-        var fileError: NSError?
-        NSFileManager.defaultManager().moveItemAtURL(location, toURL: destURL!, error: &fileError)
-        if let error = fileError {
+        do {
+            try NSFileManager.defaultManager().moveItemAtURL(location, toURL: destURL)
+        } catch let error as NSError {
             NSLog("error: \(error)");
             return
         }
@@ -97,13 +97,13 @@ class DownloadManager: NSObject {
     
     override init() {
         super.init()
-        self.documentsDirectory = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true).first as! String
+        self.documentsDirectory = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as String
         self.operationQueue = NSOperationQueue()
         self.operationQueue.maxConcurrentOperationCount = 1
     }
         
     func startDownload(URL: NSURL!, suggestedFilename: String? = nil) -> DownloadOperation {
-        var operation = DownloadOperation(URL: URL, suggestedFilename: suggestedFilename)
+        let operation = DownloadOperation(URL: URL, suggestedFilename: suggestedFilename)
         self.operationQueue.addOperation(operation)
         return operation
     }

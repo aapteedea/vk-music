@@ -32,7 +32,7 @@ class ProgressButton: UIButton {
     override func layoutSubviews() {
         super.layoutSubviews()
 
-        var color = UIColor.defaultBlueTintColor().CGColor
+        let color = UIColor.defaultBlueTintColor().CGColor
         
         // Circle background layer
         if (backgroundLayer == nil) {
@@ -47,8 +47,8 @@ class ProgressButton: UIButton {
         backgroundLayer.frame = layer.bounds
         
         // Progress layer
-        var lineWidth: CGFloat = 3.0
-        var rect = CGRectInset(bounds, lineWidth / 2.0, lineWidth / 2.0)
+        let lineWidth: CGFloat = 3.0
+        let rect = CGRectInset(bounds, lineWidth / 2.0, lineWidth / 2.0)
         if (progressLayer == nil) {
             progressLayer = CAShapeLayer()
             progressLayer.path = UIBezierPath(ovalInRect:rect).CGPath
@@ -89,22 +89,24 @@ class ProgressButton: UIButton {
     
     // MARK: KVO
     
-    override func observeValueForKeyPath(keyPath: String, ofObject object: AnyObject, change: [NSObject : AnyObject], context: UnsafeMutablePointer<()>) {
-        var task = object as! NSURLSessionTask
-        switch keyPath {
-        case "countOfBytesReceived":
-            if (task.countOfBytesExpectedToReceive > 0) {
-                dispatch_async(dispatch_get_main_queue(), {
-                    self.progress = Double(task.countOfBytesReceived) / Double(task.countOfBytesExpectedToReceive)
-                })
-            }
-        case "state":
-            switch task.state {
-            case .Canceling, .Completed:
-                self.stopObserving()
+    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [NSObject : AnyObject]?, context: UnsafeMutablePointer<()>) {
+        let task = object as! NSURLSessionTask
+        if let keyPath = keyPath {
+            switch keyPath {
+            case "countOfBytesReceived":
+                if (task.countOfBytesExpectedToReceive > 0) {
+                    dispatch_async(dispatch_get_main_queue(), {
+                        self.progress = Double(task.countOfBytesReceived) / Double(task.countOfBytesExpectedToReceive)
+                    })
+                }
+            case "state":
+                switch task.state {
+                case .Canceling, .Completed:
+                    self.stopObserving()
+                default: break
+                }
             default: break
             }
-        default: break
         }
     }
 }

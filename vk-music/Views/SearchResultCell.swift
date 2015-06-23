@@ -78,7 +78,7 @@ class SearchResultCell: UITableViewCell, ProgressButtonDelegate {
         super.setSelected(selected, animated: animated)
         
         if (selected) {
-            var color = tintColor
+            let color = tintColor
             self.titleLabel.textColor = color
             self.artistLabel.textColor = color
             self.durationLabel.textColor = color

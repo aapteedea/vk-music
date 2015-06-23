@@ -39,11 +39,11 @@ class AudioPlayer: NSObject, STKAudioPlayerDelegate, PlayerViewControllerDelegat
         super.init()
         
         // Init audio session
-        var error: NSError? = nil
-        AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback, error:&error)
-        if let error = error {
+        do {
+            try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
+        } catch let error as NSError {
             NSLog("\(error)")
-        }        
+        }
 
         // Playback controls
         UIApplication.sharedApplication().beginReceivingRemoteControlEvents()        
@@ -112,7 +112,7 @@ class AudioPlayer: NSObject, STKAudioPlayerDelegate, PlayerViewControllerDelegat
     }
     
     func updatePlayingInfo () {
-        var songInfo = NSMutableDictionary()
+        let songInfo = NSMutableDictionary()
         
         if let title = self.currentTrack?.title {
             songInfo.setObject(title, forKey: MPMediaItemPropertyTitle)
@@ -136,7 +136,8 @@ class AudioPlayer: NSObject, STKAudioPlayerDelegate, PlayerViewControllerDelegat
 //        songInfo.setObject(elapsedTime, forKey: MPNowPlayingInfoPropertyElapsedPlaybackTime)
 //        
 //        //        MPMediaItemPropertyAlbumTitle
-        MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = songInfo as [NSObject : AnyObject]
+        
+        MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = songInfo.copy() as? [String: AnyObject]
     }
     
     // MARK: - Private methods
@@ -209,15 +210,15 @@ class AudioPlayer: NSObject, STKAudioPlayerDelegate, PlayerViewControllerDelegat
     }
     
     func playerViewControllerPreviousTackButtonPressed(playerViewController: PlayerViewController!) {
-        self.previousTrack(userAction: true)
+        self.previousTrack(true)
     }
     
     func playerViewControllerNextTackButtonPressed(playerViewController: PlayerViewController!) {
-        self.nextTrack(userAction: true)
+        self.nextTrack(true)
     }
     
     func playerViewController(playerViewController: PlayerViewController!, progressSliderValueChanged value: Float) {
-        var time = self._stk_audioPlayer.duration * Double(value)
+        let time = self._stk_audioPlayer.duration * Double(value)
         self._stk_audioPlayer.seekToTime(time)
     }
     

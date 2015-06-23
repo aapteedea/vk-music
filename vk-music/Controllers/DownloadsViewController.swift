@@ -26,7 +26,7 @@ class DownloadsViewController: TableViewController, DirectoryWatcherDelegate {
     required  init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         
-        var documentsDirectory = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as! String
+//        var documentsDirectory = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as String
 //        directoryWatcher = DirectoryWatcher.watchFolderWithPath(documentsDirectory, delegate: self)
 
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "reloadData", name: NewFilesAvailableNotification, object: nil)
@@ -71,7 +71,7 @@ class DownloadsViewController: TableViewController, DirectoryWatcherDelegate {
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("defaultCell", forIndexPath: indexPath) as! DefaultTableViewCell
-        var file = self.audioFiles[indexPath.row]
+        let file = self.audioFiles[indexPath.row]
         
         cell.artistLabel.text = file.artist
         cell.titleLabel.text = file.title
@@ -106,7 +106,7 @@ class DownloadsViewController: TableViewController, DirectoryWatcherDelegate {
     }
 
     override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-        var file = self.audioFiles[indexPath.row]
+        let file = self.audioFiles[indexPath.row]
         
         var error: NSError?
         DataManager.removeFile(file.fileURL!, error: &error)
@@ -137,14 +137,14 @@ class DownloadsViewController: TableViewController, DirectoryWatcherDelegate {
     }
     
     func playerDidStartPlaying() {
-        var indexPath = self.tableView.indexPathForSelectedRow()
+        let indexPath = self.tableView.indexPathForSelectedRow
         if let indexPath = indexPath {
             self.tableView.deselectRowAtIndexPath(indexPath, animated: true)
         }
 
-        var trackIndex: Int? = find(self.audioFiles, AudioPlayer.sharedAudioPlayer.currentTrack!)
+        let trackIndex: Int? = self.audioFiles.indexOf(AudioPlayer.sharedAudioPlayer.currentTrack!)
         if let trackIndex = trackIndex {
-            var indexPath = NSIndexPath(forRow: trackIndex, inSection: 0)
+            let indexPath = NSIndexPath(forRow: trackIndex, inSection: 0)
             self.tableView.selectRowAtIndexPath(indexPath, animated: false, scrollPosition: .None)
         }
     }

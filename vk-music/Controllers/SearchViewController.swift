@@ -57,7 +57,7 @@ class SearchViewController: TableViewController, UISearchBarDelegate, SearchResu
         let cell = tableView.dequeueReusableCellWithIdentifier("searchResultCell", forIndexPath: indexPath) as! SearchResultCell
         cell.delegate = self
 
-        var song = self.songs[indexPath.row]
+        let song = self.songs[indexPath.row]
         cell.titleLabel.text = song.title
         cell.artistLabel.text = song.artist
         cell.durationLabel.text = Utilities.prettifyTime(Double(song.duration))
@@ -114,9 +114,9 @@ class SearchViewController: TableViewController, UISearchBarDelegate, SearchResu
     
     func searchResultCell(searchResultCell: SearchResultCell!, downloadButtonPressed downloadButton: UIButton!) {
         if let index = tableView.indexPathForCell(searchResultCell)?.row {
-            var song = self.songs[index]
-            var vkID = song.vkDictionary!.objectForKey("id") as! Int
-            var fileName = "\(song.title!) - \(song.artist!)_\(vkID).mp3"
+            let song = self.songs[index]
+            let vkID = song.vkDictionary!.objectForKey("id") as! Int
+            let fileName = "\(song.title!) - \(song.artist!)_\(vkID).mp3"
 
             song.downloadOperation = DownloadManager.sharedManager.startDownload(song.remoteURL!, suggestedFilename: fileName)
             searchResultCell.progressButton?.setProgress(downloadProgressOfOperation: song.downloadOperation!)
@@ -125,7 +125,7 @@ class SearchViewController: TableViewController, UISearchBarDelegate, SearchResu
 
     func searchResultCell(searchResultCell: SearchResultCell!, stopButtonPressed stopButton: ProgressButton!) {
         if let indexPath = tableView.indexPathForCell(searchResultCell) {
-            var song = self.songs[indexPath.row]
+            let song = self.songs[indexPath.row]
             if let operation = song.downloadOperation {
                 operation.cancel()
                 self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
@@ -136,14 +136,14 @@ class SearchViewController: TableViewController, UISearchBarDelegate, SearchResu
     // MARK: - Notifications
     
     func playerDidStartPlaying() {
-        var indexPath = self.tableView.indexPathForSelectedRow()
+        let indexPath = self.tableView.indexPathForSelectedRow
         if let indexPath = indexPath {
             self.tableView.deselectRowAtIndexPath(indexPath, animated: true)
         }
         
-        var trackIndex: Int? = find(self.songs, AudioPlayer.sharedAudioPlayer.currentTrack!)
+        let trackIndex: Int? = self.songs.indexOf(AudioPlayer.sharedAudioPlayer.currentTrack!)
         if let trackIndex = trackIndex {
-            var indexPath = NSIndexPath(forRow: trackIndex, inSection: 0)
+            let indexPath = NSIndexPath(forRow: trackIndex, inSection: 0)
             self.tableView.selectRowAtIndexPath(indexPath, animated: false, scrollPosition: .None)
         }
     }

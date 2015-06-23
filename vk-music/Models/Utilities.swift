@@ -14,7 +14,7 @@ extension UIColor {
     
     class func defaultBlueTintColor() -> UIColor {
         if (_defaultBlueTintColor == nil) {
-            var tmpButton = UIButton.buttonWithType(.System) as! UIButton
+            let tmpButton = UIButton(type: .System) as UIButton
             _defaultBlueTintColor = tmpButton.titleColorForState(.Normal)
         }
         return _defaultBlueTintColor!
@@ -25,8 +25,8 @@ extension UIColor {
 class Utilities: NSObject {
 
     class func prettifyTime(seconds: NSTimeInterval) -> String {
-        var minutes = (Int(seconds) / 60) % 60
-        var seconds = Int(seconds) % 60
+        let minutes = (Int(seconds) / 60) % 60
+        let seconds = Int(seconds) % 60
         return String(format:"%2d:%02d", minutes, seconds)
     }
     

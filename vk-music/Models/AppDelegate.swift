@@ -27,7 +27,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, VKSdkDelegate {
         if let token = VKAccessToken(fromDefaults: "VKAccessToken") {
             NSLog("%@", token)
         } else {
-            var permission = ["audio"]
+            let permission = ["audio"]
             VKSdk.authorize(permission)
         }
 
@@ -56,7 +56,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, VKSdkDelegate {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
     
-    func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject?) -> Bool {
+    func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject) -> Bool {
         VKSdk.processOpenURL(url, fromApplication: sourceApplication)
         return true
     }
@@ -85,9 +85,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, VKSdkDelegate {
     
     // MARK: - Remote Control Events
     
-    override func remoteControlReceivedWithEvent(event: UIEvent) {
-        if event.type == .RemoteControl {
-            switch event.subtype {
+    override func remoteControlReceivedWithEvent(event: UIEvent?) {
+        if event!.type == .RemoteControl {
+            switch event!.subtype {
             case .RemoteControlPlay:
                 AudioPlayer.sharedAudioPlayer.resume()
             case .RemoteControlPause:
@@ -95,9 +95,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, VKSdkDelegate {
             case .RemoteControlTogglePlayPause:
                 AudioPlayer.sharedAudioPlayer.togglePlayPause()
             case .RemoteControlPreviousTrack:
-                AudioPlayer.sharedAudioPlayer.previousTrack(userAction: true)
+                AudioPlayer.sharedAudioPlayer.previousTrack(true)
             case .RemoteControlNextTrack:
-                AudioPlayer.sharedAudioPlayer.nextTrack(userAction: true)
+                AudioPlayer.sharedAudioPlayer.nextTrack(true)
             default: break
             }
         }

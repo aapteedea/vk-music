@@ -12,23 +12,27 @@ class DataManager: NSObject {
 
     class func audioFiles() -> [Audio] {
 
-        var documentsDirectory = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as! String
-        var documentsDirectoryURL = NSURL(fileURLWithPath: documentsDirectory, isDirectory: true)
+        let documentsDirectory = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as String
+        let documentsDirectoryURL = NSURL(fileURLWithPath: documentsDirectory, isDirectory: true)
         
-        var error: NSError?
-        var files = NSFileManager.defaultManager().contentsOfDirectoryAtURL(documentsDirectoryURL!,
-                                                                                includingPropertiesForKeys: nil,
-                                                                                options: .SkipsHiddenFiles,
-                                                                                error: &error)
-        if (error != nil) { NSLog("error: \(error)"); return [Audio]() }
+        var files: [AnyObject]?
+        do {
+            files = try NSFileManager.defaultManager().contentsOfDirectoryAtURL(documentsDirectoryURL,
+                                                                                            includingPropertiesForKeys: nil,
+                                                                                            options: .SkipsHiddenFiles)
+        } catch let error as NSError {
+            NSLog("error: \(error)")
+            return [Audio]()
+        }
         
-        var sortedFiles: NSArray = (files as NSArray!).sortedArrayUsingComparator { (obj1, obj2) -> NSComparisonResult in
+        
+        let sortedFiles: NSArray = (files as NSArray!).sortedArrayUsingComparator { (obj1, obj2) -> NSComparisonResult in
 
-            var attr1: NSDictionary = NSFileManager.defaultManager().attributesOfItemAtPath((obj1 as! NSURL).path!, error: nil)!
-            var date1 = attr1.objectForKey(NSFileModificationDate) as! NSDate
+            let attr1: NSDictionary = try! NSFileManager.defaultManager().attributesOfItemAtPath((obj1 as! NSURL).path!)
+            let date1 = attr1.objectForKey(NSFileModificationDate) as! NSDate
             
-            var attr2: NSDictionary = NSFileManager.defaultManager().attributesOfItemAtPath((obj2 as! NSURL).path!, error: nil)!
-            var date2 = attr2.objectForKey(NSFileModificationDate) as! NSDate
+            let attr2: NSDictionary = try! NSFileManager.defaultManager().attributesOfItemAtPath((obj2 as! NSURL).path!)
+            let date2 = attr2.objectForKey(NSFileModificationDate) as! NSDate
 
             return date2.compare(date1)
         }
@@ -42,7 +46,11 @@ class DataManager: NSObject {
     }
     
     class func removeFile(fileURL: NSURL, error: NSErrorPointer) {
-        NSFileManager.defaultManager().removeItemAtURL(fileURL, error: error)
+        do {
+            try NSFileManager.defaultManager().removeItemAtURL(fileURL)
+        } catch let fileError as NSError {
+            error.memory = fileError
+        }
     }
     
 }

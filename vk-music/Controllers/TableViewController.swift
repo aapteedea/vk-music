@@ -10,7 +10,7 @@ import UIKit
 
 class TableViewController: UITableViewController {
     lazy var playerBarButtonItem: UIBarButtonItem = {
-        var button = UIButton.buttonWithType(.System) as! UIButton
+        var button = UIButton(type: .System) as UIButton
         var image = UIImage(named: "IMNowPlayingForwardChevron")!
         button.frame = CGRect(x: 0, y: 0, width: 65, height: 44)
         button.setImage(image, forState: .Normal)

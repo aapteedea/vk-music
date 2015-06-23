@@ -39,7 +39,7 @@ class PlayerViewController: UIViewController {
     // MARK: - Private Methods
     
     private class func instantiateFromStoryBoard() -> PlayerViewController {
-        var storyboard = UIStoryboard(name: "Main", bundle: NSBundle.mainBundle())
+        let storyboard = UIStoryboard(name: "Main", bundle: NSBundle.mainBundle())
         return storyboard.instantiateViewControllerWithIdentifier("playerViewController") as! PlayerViewController
     }
     
@@ -69,8 +69,8 @@ class PlayerViewController: UIViewController {
 //                self.albumArtImageView.image = image
 //            }
             
-            var index = AudioPlayer.sharedAudioPlayer.playlist?.indexOfTrack(track)
-            var count = AudioPlayer.sharedAudioPlayer.playlist?.count()
+            let index = AudioPlayer.sharedAudioPlayer.playlist?.indexOfTrack(track)
+            let count = AudioPlayer.sharedAudioPlayer.playlist?.count()
             if let index = index { self.trackNumberLabel?.text = "\(index+1) of \(Int(count!))" }
         }
     }
@@ -78,10 +78,10 @@ class PlayerViewController: UIViewController {
     func updateProgress() {
         self.progressSlider.value = Float(AudioPlayer.sharedAudioPlayer._stk_audioPlayer.progress / AudioPlayer.sharedAudioPlayer._stk_audioPlayer.duration)
         
-        var elapsed = AudioPlayer.sharedAudioPlayer._stk_audioPlayer.progress as NSTimeInterval
+        let elapsed = AudioPlayer.sharedAudioPlayer._stk_audioPlayer.progress as NSTimeInterval
         self.elapsedTimeLabel.text = Utilities.prettifyTime(elapsed)
 
-        var remaining = (AudioPlayer.sharedAudioPlayer._stk_audioPlayer.duration - AudioPlayer.sharedAudioPlayer._stk_audioPlayer.progress) as NSTimeInterval
+        let remaining = (AudioPlayer.sharedAudioPlayer._stk_audioPlayer.duration - AudioPlayer.sharedAudioPlayer._stk_audioPlayer.progress) as NSTimeInterval
         self.remainingTimeLabel.text = "-\(Utilities.prettifyTime(remaining))"
     }
     
