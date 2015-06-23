@@ -132,8 +132,12 @@ class DownloadsViewController: TableViewController, DirectoryWatcherDelegate {
     // MARK: - Notifications
     
     func reloadData() {
-        self.audioFiles = DataManager.audioFiles()
-        self.tableView.reloadData()
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0)) { () -> Void in
+            self.audioFiles = DataManager.audioFiles()
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                self.tableView.reloadData()
+            })
+        }
     }
     
     func playerDidStartPlaying() {
