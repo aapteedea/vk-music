@@ -43,7 +43,7 @@ class DefaultTableViewCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
 
         if (selected) {
-            let color = UIColor.defaultBlueTintColor()
+            let color = tintColor
             titleLabel.textColor = color
             artistLabel.textColor = color
             durationLabel.textColor = color

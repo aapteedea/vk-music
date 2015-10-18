@@ -52,7 +52,7 @@ class DataFetcher: NSObject {
                 let contentLength = response.expectedContentLength
                 successBlock?(size: Int(contentLength))
             }
-        })!.resume()
+        }).resume()
     }
     
 }

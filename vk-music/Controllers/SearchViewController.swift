@@ -22,7 +22,7 @@ class SearchViewController: TableViewController, UISearchBarDelegate, SearchResu
         }
     }
 
-    required  init(coder aDecoder: NSCoder) {
+    required  init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "playerDidStartPlaying", name: AudioPlayerDidStartPlayingNotification, object: nil)

@@ -32,7 +32,7 @@ class ProgressButton: UIButton {
     override func layoutSubviews() {
         super.layoutSubviews()
 
-        let color = UIColor.defaultBlueTintColor().CGColor
+        let color = tintColor.CGColor
         
         // Circle background layer
         if (backgroundLayer == nil) {
@@ -89,7 +89,7 @@ class ProgressButton: UIButton {
     
     // MARK: KVO
     
-    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [NSObject : AnyObject]?, context: UnsafeMutablePointer<()>) {
+    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
         let task = object as! NSURLSessionTask
         if let keyPath = keyPath {
             switch keyPath {

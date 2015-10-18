@@ -9,29 +9,41 @@
 import UIKit
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate, VKSdkDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, VKSdkDelegate, VKSdkUIDelegate {
                             
     var window: UIWindow?
-
+    
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
-                
-        window?.backgroundColor = UIColor.whiteColor()
-        window?.makeKeyAndVisible()
-
-        let appId = "4493769"
-        VKSdk.initializeWithDelegate(self, andAppId: appId)
-        if VKSdk.wakeUpSession() {
-            NSLog("VK session started")
-        }
         
-        if let token = VKAccessToken(fromDefaults: "VKAccessToken") {
-            NSLog("%@", token)
-        } else {
-            let permission = ["audio"]
-            VKSdk.authorize(permission)
-        }
+        window?.backgroundColor = UIColor.whiteColor()
+        
+        guard
+            let VKInfoDict = NSBundle.mainBundle().infoDictionary?["VK"] as? [String: NSObject],
+            let appId = VKInfoDict["AppID"] as? String
+            else { return true }
+
+        configureVKSdk(appId)
 
         return true
+    }
+    
+    func configureVKSdk(appId: String) {
+        let VKSdkInstance = VKSdk.initializeWithAppId(appId)
+        VKSdkInstance.registerDelegate(self)
+        VKSdkInstance.uiDelegate = self
+
+        let scope = ["audio"]
+        VKSdk.wakeUpSession(scope) { (state, error) -> Void in
+            switch state {
+            case .Initialized:
+                VKSdk.authorize(scope)
+            case .Authorized:
+                NSLog("VK SDK autorized.")
+            case .Error:
+                NSLog("\(error)")
+            default: break
+            }
+        }
     }
 
     func applicationWillResignActive(application: UIApplication) {
@@ -63,24 +75,41 @@ class AppDelegate: UIResponder, UIApplicationDelegate, VKSdkDelegate {
 
     // MARK: - VKSdkDelegate
     
-    func vkSdkNeedCaptchaEnter(captchaError: VKError!) {
+    func vkSdkAccessAuthorizationFinishedWithResult(result: VKAuthorizationResult!) {
+
+    }
+    
+    func vkSdkUserAuthorizationFailed() {
         
+    }
+    
+    func vkSdkAccessTokenUpdated(newToken: VKAccessToken?, oldToken: VKAccessToken!) {
+        guard let newToken = newToken else { return }
+        newToken.saveTokenToDefaults("VKAccessToken")
     }
     
     func vkSdkTokenHasExpired(expiredToken: VKAccessToken!) {
         
     }
     
-    func vkSdkUserDeniedAccess(authorizationError: VKError!) {
-        
-    }
-
+    // MARK: - VKSdkUIDelegate
+    
     func vkSdkShouldPresentViewController(controller: UIViewController!) {
-        window?.rootViewController?.presentViewController(controller, animated: true, completion: nil)
+        dispatch_async(dispatch_get_main_queue()) { () -> Void in
+            self.window?.rootViewController?.presentViewController(controller, animated: true, completion: nil)
+        }
     }
     
-    func vkSdkReceivedNewToken(newToken: VKAccessToken!) {
-        newToken.saveTokenToDefaults("VKAccessToken")
+    func vkSdkNeedCaptchaEnter(captchaError: VKError!) {
+        
+    }
+    
+    func vkSdkWillDismissViewController(controller: UIViewController!) {
+        
+    }
+    
+    func vkSdkDidDismissViewController(controller: UIViewController!) {
+        
     }
     
     // MARK: - Remote Control Events

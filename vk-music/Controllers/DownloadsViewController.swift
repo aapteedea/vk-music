@@ -23,7 +23,7 @@ class DownloadsViewController: TableViewController, DirectoryWatcherDelegate {
         }
     }
     
-    required  init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         
 //        var documentsDirectory = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as String

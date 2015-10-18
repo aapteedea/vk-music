@@ -82,11 +82,18 @@ class AudioPlayer: NSObject, STKAudioPlayerDelegate, PlayerViewControllerDelegat
     
     func togglePlayPause() {
         switch (AudioPlayer.sharedAudioPlayer._stk_audioPlayer.state) {
-            case .Ready, .Paused, .Stopped, .Error, .Disposed:
-                self.resume()
-            case .Playing, .Buffering:
-                self.pause()
-            default: break
+        case
+            STKAudioPlayerState.Ready,
+            STKAudioPlayerState.Paused,
+            STKAudioPlayerState.Stopped,
+            STKAudioPlayerState.Error,
+            STKAudioPlayerState.Disposed:
+            self.resume()
+        case
+            STKAudioPlayerState.Ready,
+            STKAudioPlayerState.Paused:
+            self.pause()
+        default: break
         }
     }
     
@@ -158,38 +165,38 @@ class AudioPlayer: NSObject, STKAudioPlayerDelegate, PlayerViewControllerDelegat
     
     // MARK: - STKAudioPlayerDelegate
     
-    func audioPlayer(audioPlayer: STKAudioPlayer!, didStartPlayingQueueItemId queueItemId: NSObject!) {
+    func audioPlayer(audioPlayer: STKAudioPlayer, didStartPlayingQueueItemId queueItemId: NSObject) {
         self.updatePlayingInfo()
 
         NSNotificationCenter.defaultCenter().postNotificationName(AudioPlayerDidStartPlayingNotification, object: nil)
     }
     
-    func audioPlayer(audioPlayer: STKAudioPlayer!, didFinishBufferingSourceWithQueueItemId queueItemId: NSObject!) {
+    func audioPlayer(audioPlayer: STKAudioPlayer, didFinishBufferingSourceWithQueueItemId queueItemId: NSObject) {
         
     }
     
-    func audioPlayer(audioPlayer: STKAudioPlayer!, stateChanged state: STKAudioPlayerState, previousState: STKAudioPlayerState) {
+    func audioPlayer(audioPlayer: STKAudioPlayer, stateChanged state: STKAudioPlayerState, previousState: STKAudioPlayerState) {
         
     }
     
-    func audioPlayer(audioPlayer: STKAudioPlayer!, didFinishPlayingQueueItemId queueItemId: NSObject!, withReason stopReason: STKAudioPlayerStopReason, andProgress progress: Double, andDuration duration: Double) {
-        
-        switch (stopReason) {
+    func audioPlayer(audioPlayer: STKAudioPlayer, didFinishPlayingQueueItemId queueItemId: NSObject,
+        withReason stopReason: STKAudioPlayerStopReason, andProgress progress: Double, andDuration duration: Double) {
+            switch (stopReason) {
             case .Eof:
                 self.nextTrack()
             default: break
-        }
+            }
     }
     
-    func audioPlayer(audioPlayer: STKAudioPlayer!, unexpectedError errorCode: STKAudioPlayerErrorCode) {
+    func audioPlayer(audioPlayer: STKAudioPlayer, unexpectedError errorCode: STKAudioPlayerErrorCode) {
         
     }
     
-    func audioPlayer(audioPlayer: STKAudioPlayer!, logInfo line: String!) {
+    func audioPlayer(audioPlayer: STKAudioPlayer, logInfo line: String) {
         
     }
     
-    func audioPlayer(audioPlayer: STKAudioPlayer!, didCancelQueuedItems queuedItems: [AnyObject]!) {
+    func audioPlayer(audioPlayer: STKAudioPlayer, didCancelQueuedItems queuedItems: [AnyObject]) {
         
     }
     
@@ -197,11 +204,18 @@ class AudioPlayer: NSObject, STKAudioPlayerDelegate, PlayerViewControllerDelegat
     
     func playerViewControllerPlayPauseButtonPressed(playerViewController: PlayerViewController!) {
         switch (self._stk_audioPlayer.state) {
-            case .Ready, .Paused, .Stopped, .Error, .Disposed:
-                self._stk_audioPlayer.resume()
-            case .Playing, .Buffering:
-                self._stk_audioPlayer.pause()
-            default: break
+        case
+            STKAudioPlayerState.Ready,
+            STKAudioPlayerState.Paused,
+            STKAudioPlayerState.Stopped,
+            STKAudioPlayerState.Error,
+            STKAudioPlayerState.Disposed:
+            self._stk_audioPlayer.resume()
+        case
+            STKAudioPlayerState.Playing,
+            STKAudioPlayerState.Buffering:
+            self._stk_audioPlayer.pause()
+        default: break
         }
     }
 
@@ -225,14 +239,15 @@ class AudioPlayer: NSObject, STKAudioPlayerDelegate, PlayerViewControllerDelegat
     // MARK: - Notifications
     
     func routeDidChange(notification: NSNotification!) {
-        if let routeChangeReasonValue = notification.userInfo?[AVAudioSessionRouteChangeReasonKey] as? UInt {
-            if let routeChangeReason = AVAudioSessionRouteChangeReason(rawValue: routeChangeReasonValue) {
-                switch routeChangeReason {
-                case .OldDeviceUnavailable:
-                    self.pause()
-                default: break
-                }
-            }
+        guard
+            let routeChangeReasonValue = notification.userInfo?[AVAudioSessionRouteChangeReasonKey] as? UInt,
+            let routeChangeReason = AVAudioSessionRouteChangeReason(rawValue: routeChangeReasonValue)
+            else { return }
+        
+        switch routeChangeReason {
+        case .OldDeviceUnavailable:
+            self.pause()
+        default: break
         }
     }
     

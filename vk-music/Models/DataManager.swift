@@ -18,8 +18,7 @@ class DataManager: NSObject {
         var files: [AnyObject]?
         do {
             files = try NSFileManager.defaultManager().contentsOfDirectoryAtURL(documentsDirectoryURL,
-                                                                                            includingPropertiesForKeys: nil,
-                                                                                            options: .SkipsHiddenFiles)
+                includingPropertiesForKeys: nil, options: .SkipsHiddenFiles)
         } catch let error as NSError {
             NSLog("error: \(error)")
             return [Audio]()

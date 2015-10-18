@@ -206,6 +206,7 @@
 				7F20FD35199219A300F5322B /* Frameworks */,
 				7F20FD36199219A300F5322B /* Resources */,
 				AA5A6F360895441992224631 /* Copy Pods Resources */,
+				32A26604572192E24242A184 /* Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -268,6 +269,21 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		32A26604572192E24242A184 /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-vk-music/Pods-vk-music-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		461384A10B5C4B81B05B77D4 /* Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;

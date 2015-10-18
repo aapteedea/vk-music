@@ -11,12 +11,20 @@ import MediaPlayer
 
 private var _sharedPlayerViewController: PlayerViewController!
 
-protocol PlayerViewControllerDelegate: class {
+protocol PlayerViewControllerDelegate: NSObjectProtocol {
     func playerViewControllerPlayPauseButtonPressed(playerViewController: PlayerViewController!)
     func playerViewControllerPauseButtonPressed(playerViewController: PlayerViewController!)
     func playerViewControllerPreviousTackButtonPressed(playerViewController: PlayerViewController!)
     func playerViewControllerNextTackButtonPressed(playerViewController: PlayerViewController!)
     func playerViewController(playerViewController: PlayerViewController!, progressSliderValueChanged value: Float)
+}
+
+class PlayerNavigationBarView: UIView {
+
+    @IBOutlet weak var titleLabel: UILabel!
+    @IBOutlet weak var artistLabel: UILabel!
+    @IBOutlet weak var fileNameLabel: UILabel!
+    
 }
 
 class PlayerViewController: UIViewController {
@@ -33,7 +41,7 @@ class PlayerViewController: UIViewController {
     @IBOutlet weak var fastRewindButton: UIButton!
     @IBOutlet weak var volumeView: MPVolumeView!
 
-    private var navigationBarView = NSBundle.mainBundle().loadNibNamed("PlayerNavigationBarView", owner: nil, options: nil)[0] as! UIView
+    private var navigationBarView = NSBundle.mainBundle().loadNibNamed("PlayerNavigationBarView", owner: nil, options: nil)[0] as! PlayerNavigationBarView
     weak var delegate: PlayerViewControllerDelegate?
     
     // MARK: - Private Methods
@@ -46,58 +54,66 @@ class PlayerViewController: UIViewController {
     // MARK: - Public Methods
     
     func clearTrackInfo() {
-        (self.navigationBarView.viewWithTag(1) as! UILabel).text = nil
-        (self.navigationBarView.viewWithTag(2) as! UILabel).text = nil
-        (self.navigationBarView.viewWithTag(3) as! UILabel).text = nil
+        navigationBarView.titleLabel.text = nil
+        navigationBarView.artistLabel.text = nil
+        navigationBarView.fileNameLabel.text = nil
         
-        self.albumArtImageView?.image = UIImage(named: "AlbumCoverPlaceHolder")
-        self.trackNumberLabel?.text = "1 of 1"
+        albumArtImageView?.image = UIImage(named: "AlbumCoverPlaceHolder")
+        trackNumberLabel?.text = "1 of 1"
     }
     
     func updateTackInfo () {
-        self.clearTrackInfo()
+        clearTrackInfo()
+
+        guard let track = AudioPlayer.sharedAudioPlayer.currentTrack else { return }
+            
+        if let title = track.title, let artist = track.artist {
+            navigationBarView.titleLabel.text = title
+            navigationBarView.artistLabel.text = artist
+        } else {
+            navigationBarView.fileNameLabel.text = track.fileName
+        }
+
+        if let albumArt = track.albumArt {
+            albumArtImageView?.image = albumArt
+        }
         
-        if let track = AudioPlayer.sharedAudioPlayer.currentTrack {
-            (self.navigationBarView.viewWithTag(1) as! UILabel).text = track.title
-            (self.navigationBarView.viewWithTag(2) as! UILabel).text = track.artist
-            
-            if track.title == nil && track.artist == nil {
-                (self.navigationBarView.viewWithTag(3) as! UILabel).text = track.fileName
-            }
-            
-//            if let image = track.albumArt {
-//                self.albumArtImageView.image = image
-//            }
-            
-            let index = AudioPlayer.sharedAudioPlayer.playlist?.indexOfTrack(track)
-            let count = AudioPlayer.sharedAudioPlayer.playlist?.count()
-            if let index = index { self.trackNumberLabel?.text = "\(index+1) of \(Int(count!))" }
+        if let index = AudioPlayer.sharedAudioPlayer.playlist?.indexOfTrack(track),
+            let count = AudioPlayer.sharedAudioPlayer.playlist?.count() {
+            trackNumberLabel?.text = "\(index+1) of \(count)"
         }
     }
 
     func updateProgress() {
-        self.progressSlider.value = Float(AudioPlayer.sharedAudioPlayer._stk_audioPlayer.progress / AudioPlayer.sharedAudioPlayer._stk_audioPlayer.duration)
+        progressSlider.value = Float(AudioPlayer.sharedAudioPlayer._stk_audioPlayer.progress / AudioPlayer.sharedAudioPlayer._stk_audioPlayer.duration)
         
         let elapsed = AudioPlayer.sharedAudioPlayer._stk_audioPlayer.progress as NSTimeInterval
-        self.elapsedTimeLabel.text = Utilities.prettifyTime(elapsed)
+        elapsedTimeLabel.text = Utilities.prettifyTime(elapsed)
 
         let remaining = (AudioPlayer.sharedAudioPlayer._stk_audioPlayer.duration - AudioPlayer.sharedAudioPlayer._stk_audioPlayer.progress) as NSTimeInterval
-        self.remainingTimeLabel.text = "-\(Utilities.prettifyTime(remaining))"
+        remainingTimeLabel.text = "-\(Utilities.prettifyTime(remaining))"
     }
     
     func configureControlButtons() {
         switch (AudioPlayer.sharedAudioPlayer._stk_audioPlayer.state) {
-            case .Ready, .Paused, .Stopped, .Error, .Disposed:
-                self.playButton.setImage(UIImage(named: "UIButtonBarPlay"), forState: .Normal)
-            case .Playing, .Buffering:
-                self.playButton.setImage(UIImage(named: "UIButtonBarPause"), forState: .Normal)
+            case
+                STKAudioPlayerState.Ready,
+                STKAudioPlayerState.Paused,
+                STKAudioPlayerState.Stopped,
+                STKAudioPlayerState.Error,
+                STKAudioPlayerState.Disposed:
+                playButton.setImage(UIImage(named: "UIButtonBarPlay"), forState: .Normal)
+            case
+                STKAudioPlayerState.Playing,
+                STKAudioPlayerState.Buffering:
+                playButton.setImage(UIImage(named: "UIButtonBarPause"), forState: .Normal)
             default: break
         }
     }
     
     func configure() {
-        self.updateProgress()
-        self.configureControlButtons()
+        updateProgress()
+        configureControlButtons()
     }
     
     // MARK: - View Life Cycle
@@ -105,8 +121,8 @@ class PlayerViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.edgesForExtendedLayout = .None
-        self.navigationItem.titleView = navigationBarView
+        edgesForExtendedLayout = .None
+        navigationItem.titleView = navigationBarView
         
         NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: "updateProgress", userInfo: nil, repeats: true)
     }
@@ -114,40 +130,35 @@ class PlayerViewController: UIViewController {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        self.tabBarController?.tabBar.hidden = true
+        tabBarController?.tabBar.hidden = true
 
-        self.updateTackInfo()
-        self.configure()
-        self.updateProgress()
-    }
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+        updateTackInfo()
+        configure()
+        updateProgress()
     }
     
     // MARK: - Actions
     
     @IBAction func playButtonPressed(sender: AnyObject) {
-        self.delegate?.playerViewControllerPlayPauseButtonPressed(self)
-        self.updateTackInfo()
-        self.configureControlButtons()
+        delegate?.playerViewControllerPlayPauseButtonPressed(self)
+        updateTackInfo()
+        configureControlButtons()
     }
 
     @IBAction func rewindButtonPressed(sender: AnyObject) {
-        self.delegate?.playerViewControllerPreviousTackButtonPressed(self)
-        self.updateTackInfo()
-        self.configure()
+        delegate?.playerViewControllerPreviousTackButtonPressed(self)
+        updateTackInfo()
+        configure()
     }
     
     @IBAction func fastRewindButtonPressed(sender: AnyObject) {
-        self.delegate?.playerViewControllerNextTackButtonPressed(self)
-        self.updateTackInfo()
-        self.configure()        
+        delegate?.playerViewControllerNextTackButtonPressed(self)
+        updateTackInfo()
+        configure()
     }
     
     @IBAction func progressSliderValueChanged(sender: UISlider) {
-        self.delegate?.playerViewController(self, progressSliderValueChanged: sender.value)
+        delegate?.playerViewController(self, progressSliderValueChanged: sender.value)
     }
 
 }

@@ -44,7 +44,7 @@ class DownloadOperation: NSOperation, NSURLSessionTaskDelegate, NSURLSessionDown
     
     func sanitizeFileName(fileName: String) -> String {
         let illegalFileNameCharacters = NSCharacterSet(charactersInString:" /\\?%*|\"<>")
-        return "_".join(fileName.componentsSeparatedByCharactersInSet(illegalFileNameCharacters))
+        return fileName.componentsSeparatedByCharactersInSet(illegalFileNameCharacters).joinWithSeparator("_")
     }
     // MARK: - NSURLSessionTaskDelegate
     
@@ -73,7 +73,8 @@ class DownloadOperation: NSOperation, NSURLSessionTaskDelegate, NSURLSessionDown
         }
         fileName = self.sanitizeFileName(fileName!)
         
-        let filePath = DownloadManager.sharedManager.documentsDirectory.stringByAppendingPathComponent(fileName!)
+        let dirPath = DownloadManager.sharedManager.documentsDirectory as NSString
+        let filePath = dirPath.stringByAppendingPathComponent(fileName!)
         let destURL = NSURL(fileURLWithPath: filePath)
         
         do {
